@@ -41,22 +41,15 @@
 
                 <xpath expr="//form/sheet/notebook/page[@name='reel_detail']" position="after">
                     <page string="Cylinder" name="cylinder">
-
                         <field name="manufacturing_cylinder_ids">
-                            <tree string="Reels">
+                            <tree string="Reels" editable="bottom">
                                 <field name="cylinder"/>
-                                <field name="job_code"/>
-                                <field name="job_name"/>
+                                <field name="qty_on_hand" force_save="1"/>
+                                <field name="color" force_save="1"/>
                             </tree>
                         </field>
                     </page>
                 </xpath>
-                <!--                 <xpath expr="//form/sheet/notebook/page/field[@name='workorder_ids']/tree/field[@name='product_id']"-->
-                <!--                       position="after">-->
-                <!--                    <field name="worker"/>-->
-                <!--                    <field name="weight"/>-->
-                <!--                    <field name="meter_no"/>-->
-                <!--                </xpath>-->
             </field>
         </record>
 

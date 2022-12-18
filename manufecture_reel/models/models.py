@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -35,6 +35,23 @@ class ManufacturingModelInherit(models.Model):
         for rec in self:
             for line in rec.move_raw_ids:
                 line.meter = line.quantity_done * line.product_id.product_tmpl_id.meter_per_kg
+        return res
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        self.manufacturing_cylinder_ids = None
+        cylinder_id = self.env['product.template'].search([('product_cid', '=', self.product_id.product_tmpl_id.id)],
+                                                          limit=1)
+        if cylinder_id:
+            self.manufacturing_cylinder_ids = [
+                (0, 0,
+                 {'cylinder': cylinder_id.id, 'qty_on_hand': cylinder_id.qty_available, 'color': cylinder_id.color})]
+
+    def action_confirm(self):
+        res = super(ManufacturingModelInherit, self).action_confirm()
+        for line in self.manufacturing_cylinder_ids:
+            if line.qty_on_hand != int(line.color):
+                raise ValidationError(_("Cylinder Quantity is in Maintenance"))
         return res
 
 
@@ -79,7 +96,7 @@ class MrpWorkCenterModelInherit(models.Model):
 class ManufacturingCylinderModel(models.Model):
     _name = "manufacturing.cylinder"
 
-    cylinder = fields.Char(string="Cylinder")
-    job_code = fields.Char(string="Job Code")
-    job_name = fields.Char(string="Job Name")
+    cylinder = fields.Many2one('product.template', string="Cylinder")
+    qty_on_hand = fields.Integer("Quantity On Hand", readonly=True)
+    color = fields.Integer("Color", readonly=True)
     mrp_cylinder_id = fields.Many2one('mrp.production')
