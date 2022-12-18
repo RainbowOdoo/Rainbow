@@ -18,6 +18,9 @@ class ProductDevelopment(models.Model):
     color = fields.Integer(string="Color")
     cylinder_maker = fields.Many2one('res.partner', string='Cylinder Maker')
     meter_per_kg = fields.Float(string="Meter per kg")
+    partner_id = fields.Many2one('res.partner', 'Party Name')
+    product_cid = fields.Many2one('product.template', "Product", domain=[('is_cylinder', '=', False)])
+    is_cylinder = fields.Boolean("Cylinder")
 
     @api.model
     def create(self, vals):
@@ -39,6 +42,9 @@ class ProductDevelopment(models.Model):
                     'color': res.color,
                     'cylinder_maker': res.cylinder_maker,
                     'meter_per_kg': res.meter_per_kg,
+                    'partner_id': res.partner_id.id,
+                    'product_cid': res.product_cid.id,
+                    'is_cylinder': res.is_cylinder
                 })
         return res
 
@@ -70,6 +76,9 @@ class InheritProductProduct(models.Model):
     color = fields.Integer(string="Color")
     cylinder_maker = fields.Many2one('res.partner', string='Cylinder Maker')
     meter_per_kg = fields.Float(string="Meter per kg")
+    partner_id = fields.Many2one('res.partner', 'Party Name')
+    product_cid = fields.Many2one('product.template', "Product", domain=[('is_cylinder', '=', False)])
+    is_cylinder = fields.Boolean("Cylinder")
 
     @api.depends('unit_width_mm', 'ups')
     def _compute_print_size_mm(self):
