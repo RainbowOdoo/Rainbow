@@ -77,7 +77,7 @@ class InheritProductProduct(models.Model):
                 supplier_info_by_template.setdefault(r.product_tmpl_id, []).append(r)
         if self.env.context.get('sale') or (self.env.context.get('move_type') == 'out_invoice'):
             partner_id = self.env.context.get('partner_id')
-            products = self.env['product.product'].search([('customer_ids', '=', partner_id)])
+            products = self.sudo().filtered_domain([('customer_ids', '=', partner_id)])
         else:
             products = self.sudo()
         for product in products:
