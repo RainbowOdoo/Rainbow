@@ -11,7 +11,6 @@ class InheritProductProduct(models.Model):
          'Prefix Must Be Unique.'),
     ]
 
-    prefix = fields.Char("Prefix")
 
 
 class InheritProductTemplate(models.Model):
@@ -69,27 +68,28 @@ class InheritStockMove(models.Model):
                                 # lot = self.move_line_nosugest_ids
                                 tare_qty_old = rec.tare/rec.for_qty
                                 product = rec.product_id.categ_id.id
+                                location_dest_id = self.location_dest_id
 
                                 # put_putaway = self.env['stock.putaway.rule'].search(['|', ('product_id', '=', rec.product_id.id) ('category_id', '=', rec.product_id.categ_id.id)])
-                                put_putaway = self.env['stock.putaway.rule'].search([('category_id', '=', rec.product_id.categ_id.id)])
+                                put_putaway = self.env['stock.putaway.rule'].sudo().search([('category_id', '=', rec.product_id.categ_id.id),('location_in_id', '=', self.location_dest_id.id)])
                                 if put_putaway:
-
-                                    line_dict = {'location_dest_id': put_putaway.location_out_id.id,
-                                                 'lot_name': lot_number,
-                                                 'product_uom_id': rec.product_uom.id,
-                                                 'gross_weight': rec.total_gross_weight/rec.for_qty,
-                                                 'tare': rec.tare/rec.for_qty,
-                                                 'qty_done': (rec.total_gross_weight/rec.for_qty) - (rec.tare/rec.for_qty),
-                                                 # 'qty_done': (rec.total_gross_weight/rec.for_qty)-(rec.tare/rec.for_qty),
-                                                 'product_id': rec.product_id.id,}
-                                    dupli = self.env['stop.lot.duplication']
-                                    dupli.create({
-                                        "name": line_dict['lot_name']
-                                    })
-                                    rec.write({
-                                        'move_line_ids': [
-                                            (0, 0, line_dict)]
-                                    })
+                                    for put_putaway in put_putaway:
+                                        line_dict = {'location_dest_id': put_putaway.location_out_id.id,
+                                                     'lot_name': lot_number,
+                                                     'product_uom_id': rec.product_uom.id,
+                                                     'gross_weight': rec.total_gross_weight/rec.for_qty,
+                                                     'tare': rec.tare/rec.for_qty,
+                                                     'qty_done': (rec.total_gross_weight/rec.for_qty) - (rec.tare/rec.for_qty),
+                                                     # 'qty_done': (rec.total_gross_weight/rec.for_qty)-(rec.tare/rec.for_qty),
+                                                     'product_id': rec.product_id.id,}
+                                        dupli = self.env['stop.lot.duplication']
+                                        dupli.create({
+                                            "name": line_dict['lot_name']
+                                        })
+                                        rec.write({
+                                            'move_line_ids': [
+                                                (0, 0, line_dict)]
+                                        })
                                 else:
                                     line_dict = {
                                                  'lot_name': lot_number,
@@ -132,7 +132,8 @@ class InheritStockMove(models.Model):
         date = self.date
         month = date.month
         day = date.day
-        initial = str(month) + '-' + str(day) + '-' + '0000000'
+        year = date.year
+        initial = str(year) + '-' + str(month) + '-' + '000000'
         if not index:
             index = ''
         # lot_num = self.product_id.prefix or '' + '-' + initial + str(index)
