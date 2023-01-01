@@ -1,0 +1,90 @@
+<odoo>
+    <data>
+        <template id="print_lot_number">
+            <t t-call="web.html_container">
+                <t t-foreach="data" t-as="rec">
+                    <t t-call="web.basic_layout">
+                        <!--                    <t t-foreach="docs" t-as="o">-->
+
+                        <style>
+                            table th, td {text-align:center;padding: 10px;}
+                            .row_border{border: 1px dashed black}
+                            .first_row{border-bottom:1px dashed black;border-left:1px dashed black;border-right:1px
+                            dashed black;}
+                            .page {border-radius: 10px;}
+                        </style>
+                        <div class="page" style="border-radius: 10px;">
+                            <table width="100%">
+                                <tr class="row_border">
+                                    <td class="text-center" colspan="2">
+                                        <h2>Rainbow Printing Solutions Pvt Ltd</h2>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <table width="100%">
+                                <tr>
+                                    <td width="16%" class="first_row">Material</td>
+                                    <td width="84%" colspan="3" class="first_row text-center">
+                                        <span t-esc="rec['product_name']"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table width="100%">
+                                <tr>
+                                    <td width="15%" class="row_border">Lot No</td>
+                                    <td width="30%" class="row_border">
+                                        <span t-esc="rec['lot_number']"/>
+                                    </td>
+                                    <td width="25%" class="row_border">Supplier</td>
+                                    <td width="30%" class="row_border">
+                                        <span t-esc="rec['supplier']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_border">Gr WT</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['gross_weight']"/>
+                                    </td>
+                                    <td class="row_border">Date</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['date']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_border">Tare WT</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['gross_weight']"/>
+                                    </td>
+                                    <td class="row_border">Goods Received</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['good_received']"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="row_border">Net WT</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['net_weight']"/>
+                                    </td>
+                                    <td class="row_border">Barcode</td>
+                                    <td class="row_border">
+                                        <span t-esc="rec['barcode']"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="row_border" colspan="4">
+                                        <img t-if="rec['barcode']" t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', rec['barcode'],2000, 800)"
+                                             style="width:500px;height:50px;"/>
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

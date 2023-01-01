@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="paperformat_print_lot_number" model="report.paperformat">
+            <field name="name">Print Lot Number</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">150</field>
+            <field name="page_width">100</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">2</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+        <report
+                id="print_lot_number_id"
+                model="stock.move.line"
+                report_type="qweb-pdf"
+                string="Print Report"
+                name="print_lot_number.print_lot_number"
+                file="print_lot_number.print_lot_number"
+                paperformat="print_lot_number.paperformat_print_lot_number"/>
+    </data>
+</odoo>
