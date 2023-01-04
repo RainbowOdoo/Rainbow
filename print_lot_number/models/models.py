@@ -15,6 +15,7 @@ class InheritStockMove(models.Model):
                 'product_name': self.product_id.name,
                 'picking_name': rec.picking_id.name,
                 'lot_number': rec.lot_id.name,
+                'lot_name': rec.lot_name,
                 'gross_weight': rec.gross_weight,
                 'tare': rec.tare,
                 'net_weight': rec.qty_done,
